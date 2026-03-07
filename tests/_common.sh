@@ -110,7 +110,8 @@ if [[ -z "$VM_PORT" ]]; then
 fi
 
 # ── SSH helper ───────────────────────────────────────────────────────
-_ssh_opts=(-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR)
+_ssh_opts=(-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR
+           -o ServerAliveInterval=30 -o ServerAliveCountMax=6)
 
 ssh_vm() {
     ssh "${_ssh_opts[@]}" -i "$SSH_KEY" -p "$VM_PORT" labuser@localhost "$@"
