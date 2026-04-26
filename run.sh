@@ -1027,6 +1027,10 @@ packages:
   - python3-pip
   - python3-venv
   - curl
+  - zsh
+  - vim
+  - nano
+  - fonts-powerline
 write_files:
   - path: /etc/profile.d/cloud-init-status.sh
     permissions: '0755'
@@ -1107,6 +1111,13 @@ write_files:
     encoding: b64
     permissions: '0755'
     content: __07_PREDICT_B64__
+  - path: /tmp/setup-zsh.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      sed -i 's/^ZSH_THEME=.*/ZSH_THEME="agnoster"/' ~/.zshrc
+      sed -i 's/^plugins=(.*)/plugins=(git)/' ~/.zshrc
 runcmd:
   - chmod -x /etc/update-motd.d/*
   - sed -i 's/^#\?PrintMotd.*/PrintMotd yes/' /etc/ssh/sshd_config
@@ -1117,6 +1128,8 @@ runcmd:
   - mkdir -p /home/labuser/data
   - pip3 install --quiet scikit-learn pandas numpy matplotlib
   - chown -R labuser:labuser /home/labuser
+  - sudo -Hu labuser bash /tmp/setup-zsh.sh
+  - chsh -s /usr/bin/zsh labuser
   - echo "=== ml-network-lab VM is ready! ==="
 USERDATA
 
